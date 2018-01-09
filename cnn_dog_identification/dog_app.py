@@ -14,7 +14,7 @@ from glob import glob # finds all the pathnames matching a specified pattern acc
 from PIL import ImageFile # provides support functions for the image open and save functions
 from Detector import HumanDetector, DogDetector
 from Detector import path_to_tensor, paths_to_tensor
-from cnn import FromScratchModel, TransferLearningModel
+from cnn import FromScratchModel, TransferLearningModel, breed_detector
 
 def load_dataset(img_path):
 	data = load_files(img_path)
@@ -48,6 +48,7 @@ if __name__ == "__main__":
 	human_files_short = human_files[:100]
 	dog_files_short = train_files[:100]
 	
+	'''
 	# Detect humans
 	human_classifier = HumanDetector()
 	human_classifier.display_face(human_files[3])
@@ -56,9 +57,9 @@ if __name__ == "__main__":
 	dog_classifier = DogDetector()
 	print("Out of the images, %.2f%% are human." % human_classifier.count_images(human_files_short))
 	print("Out of the images, %.2f%% are dogs." % dog_classifier.count_images(dog_files_short))
-	
-	# ImageFile.LOAD_TRUNCATED_IMAGES = True         
 
+	ImageFile.LOAD_TRUNCATED_IMAGES = True         
+	
 	# Pre-process the data for Keras and create from scratch model
 	train_tensors = paths_to_tensor(train_files).astype('float32') / 255
 	valid_tensors = paths_to_tensor(valid_files).astype('float32') / 255
@@ -68,6 +69,7 @@ if __name__ == "__main__":
 	dog_breed_predictions = [np.argmax(model.predict(np.expand_dims(tensor, axis=0))) for tensor in test_tensors]
 	test_accuracy = 100 * np.sum(np.array(dog_breed_predictions) == np.argmax(test_targets, axis = 1)) / len(dog_breed_predictions)
 	print('Test accuracy: %.2f%%' % test_accuracy)
+	'''
 
 	# Transfer Learning Model
 	test_resnet50, resnet50_model = TransferLearningModel()
@@ -75,4 +77,7 @@ if __name__ == "__main__":
 	test_accuracy = 100 * np.sum(np.array(resnet50_predictions) == np.argmax(test_targets, axis = 1)) / len(resnet50_predictions)
 	print('Test accuracy: %.2f%%' % test_accuracy)
 
-	
+	sample_files = np.array(glob("sample_images/*"))
+	random.shuffle(sample_files)
+	for sample_image in sample_files:
+		breed_detector(sample_image, resnet50_model, dog_names)
