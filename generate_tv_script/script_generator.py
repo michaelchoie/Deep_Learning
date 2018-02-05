@@ -213,6 +213,7 @@ def main():
 	    
 	    # Remove tokens
 	    tv_script = ' '.join(gen_sentences)
+	    token_dict = preprocess.token_lookup()
 	    for key, token in token_dict.items():
 	        ending = ' ' if key in ['\n', '(', '"'] else ''
 	        tv_script = tv_script.replace(' ' + token.lower(), key)
