@@ -12,22 +12,22 @@ test_file.py - in charge of testing functions in the modules above
 
 To get started with this, make sure you set up your local environment
 1. Download the script data using the following bash script:
-'''
+```
 mkdir -p data/simpsons
 cd data/simpsons
 curl https://raw.githubusercontent.com/udacity/deep-learning/master/tv-script-generation/data/simpsons/moes_tavern_lines.txt > moes_tavern_lines.txt
-'''
+```
 2. Install appropriate packages into a virtual environment
-'''
+```
 pip install virtualenv
 cd <your_project_folder>
 virtualenv my_project
 source my_project/bin/activate
 pip install -r requirements.txt
-'''
+```
 
 ## How to run
 Simply run the script_generator.py file
-'''
+```
 python script_generator.py
-'''
+```
