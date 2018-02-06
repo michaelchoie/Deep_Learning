@@ -33,3 +33,7 @@ Then run the script_generator.py file
 python preprocess.py
 python script_generator.py
 ```
+
+## TODO
+- Finish the docstrings <br />
+- Figure out why seq2seq.sequence_loss() cannot be referenced by name
