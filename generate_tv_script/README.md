@@ -30,8 +30,7 @@ pip install -r requirements.txt
 First, preprocess the data by running the script preprocess.py <br />
 Then run the script_generator.py file
 ```
-python preprocess.py
-python script_generator.py
+python preprocess.py && python script_generator.py
 ```
 
 ## TODO
