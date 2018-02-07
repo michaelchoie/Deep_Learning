@@ -14,13 +14,14 @@ class ScriptGenerator(object):
         num_epochs (int): num times data is fully processed during backprop
         batch_size (int): size of mini-batches during backprop
         rnn_size (int): size of LSTM cells
+        rnn_layer_size (int) = num of stacked LSTM cells
         embed_dim (int): size of word2vec embedded layer
         seq_length (int): number of words processed at a time
         learning_rate (float): learning rate for optimization purposes
         show_every_n_batches (int): output training results every n batches
         gen_length (int): length of generated script
         save_dir (str): path to checkpoint file
-        prime_word (str): word to prime the model
+        prime_word (str): word to prime the RNN model
     """
 
     def __init__(self):
@@ -28,6 +29,7 @@ class ScriptGenerator(object):
         self.num_epochs = 50
         self.batch_size = 128
         self.rnn_size = 1024
+        self.rnn_layer_size = 2
         self.embed_dim = 512
         self.seq_length = 16
         self.learning_rate = 0.001
@@ -49,18 +51,17 @@ class ScriptGenerator(object):
 
         return (inputs, targets, learning_rate)
 
-    def _get_init_cell(self, batch_size, rnn_size):
+    def _get_init_cell(self, batch_size):
         """
         Create an RNN Cell and initialize it.
 
         Args:
             batch_size (int): Size of batches
-            rnn_size (int): Size of RNNs
         Returns:
             tuple (cell, initialize state)
         """
-        lstm = tf.contrib.rnn.BasicLSTMCell(rnn_size)
-        cell = tf.contrib.rnn.MultiRNNCell([lstm] * 2)
+        lstm = tf.contrib.rnn.BasicLSTMCell(self.rnn_size)
+        cell = tf.contrib.rnn.MultiRNNCell([lstm] * self.rnn_layer_size)
         initial_state = cell.zero_state(batch_size, tf.float32)
         initial_state = tf.identity(initial_state, name="initial_state")
 
@@ -99,20 +100,18 @@ class ScriptGenerator(object):
 
         return (outputs, final_state)
 
-    def _build_nn(self, cell, rnn_size, input_data, vocab_size, embed_dim):
+    def _build_nn(self, cell, input_data, vocab_size):
         """
         Build part of the neural network.
 
         Args:
             cell (tensor): RNN cell
-            rnn_size (int): Size of rnns
             input_data (ndarray): Input data
             vocab_size (int): Vocabulary size
-            embed_dim (int): Number of embedding dimensions
         Returns:
             tuple (Logits, FinalState)
         """
-        embed = self._get_embed(input_data, vocab_size, embed_dim)
+        embed = self._get_embed(input_data, vocab_size, self.embed_dim)
         outputs, final_state = self._build_rnn(cell, embed)
         logits = tf.contrib.layers.fully_connected(outputs, vocab_size,
                                                    activation_fn=None)
@@ -148,7 +147,7 @@ class ScriptGenerator(object):
             optimizer (tensor): optimizing function
             cost (tensor): cost function
         Returns:
-            capped_gradients (tensor): capped gradients to prevent exploding gradients
+            capped_gradients (tensor): prevent exploding gradient problem
             train_op (op): TensorFlow optimizing operation
         """
         gradients = optimizer.compute_gradients(cost)
@@ -210,26 +209,24 @@ class ScriptGenerator(object):
         return int_to_vocab[np.random.choice(np.arange(len(probabilities)),
                                              p=probabilities)]
 
-    def _get_batches(self, int_text, batch_size, seq_length):
+    def _get_batches(self, int_text):
         """
         Return batches of input and target.
 
         Args:
             int_text (list): TV script data represented in integers
-            batch_size (int): the size of batch
-            seq_length (int): the length of sequence
         Returns:
             ndarray (mini-batch)
         """
-        n_sequences = len(int_text) // (batch_size * seq_length)
-        n_words = n_sequences * batch_size * seq_length
+        n_sequences = len(int_text) // (self.batch_size * self.seq_length)
+        n_words = n_sequences * self.batch_size * self.seq_length
         inputs = np.array(int_text[:n_words])
 
-        input_batches = np.split(inputs.reshape(batch_size, -1),
+        input_batches = np.split(inputs.reshape(self.batch_size, -1),
                                  n_sequences, axis=1)
         targets = np.array(int_text[1:n_words + 1])
         targets[-1] = int_text[0]
-        target_batches = np.split(targets.reshape(batch_size, -1),
+        target_batches = np.split(targets.reshape(self.batch_size, -1),
                                   n_sequences, axis=1)
 
         return np.array(list(zip(input_batches, target_batches)))
@@ -276,11 +273,8 @@ class ScriptGenerator(object):
             vocab_size = len(int_to_vocab)
             input_text, targets, lr = self._get_inputs()
             input_data_shape = tf.shape(input_text)
-            cell, initial_state = self._get_init_cell(input_data_shape[0],
-                                                      self.rnn_size)
-            logits, final_state = self._build_nn(cell, self.rnn_size,
-                                                 input_text, vocab_size,
-                                                 self.embed_dim)
+            cell, initial_state = self._get_init_cell(input_data_shape[0])
+            logits, final_state = self._build_nn(cell, input_text, vocab_size)
 
             # Probabilities for generating words
             probs = tf.nn.softmax(logits, name="probs")
@@ -304,7 +298,7 @@ class ScriptGenerator(object):
         """
         train_graph, cost = self._build_graph(int_to_vocab)
         initial_state, input_text, targets, lr, final_state, train_op = self._get_bare_tensors(train_graph)
-        batches = self._get_batches(int_text, self.batch_size, self.seq_length)
+        batches = self._get_batches(int_text)
 
         # Train neural network
         with tf.Session(graph=train_graph) as sess:

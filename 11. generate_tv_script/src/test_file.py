@@ -49,7 +49,7 @@ class TestHelper(unittest.TestCase):
             self.assertIsNotNone(symbol_val)
 
     def test_create_lookup_table(self):
-        """Test preprocess.py function, create_lookup_table()."""
+        """Test preprocess.py function, _create_lookup_table()."""
         with tf.Graph().as_default():
             test_text = '''
                         Moe_Szyslak Moe's Tavern Where the elite meet to drink
@@ -71,7 +71,7 @@ class TestHelper(unittest.TestCase):
             test_text = test_text.lower()
             test_text = test_text.split()
 
-            vocab_to_int, int_to_vocab = self.pp.create_lookup_tables(test_text)
+            vocab_to_int, int_to_vocab = self.pp._create_lookup_tables(test_text)
 
             # Check types
             self.assertIsInstance(vocab_to_int, dict)
@@ -124,9 +124,7 @@ class TestHelper(unittest.TestCase):
         """Test script_generator.py function, _get_init_cell()."""
         with tf.Graph().as_default():
             test_batch_size_ph = tf.placeholder(tf.int32, [])
-            test_rnn_size = 256
-            cell, init_state = self.sg._get_init_cell(test_batch_size_ph,
-                                                      test_rnn_size)
+            cell, init_state = self.sg._get_init_cell(test_batch_size_ph)
 
             # Check type
             self.assertIsInstance(cell, tf.contrib.rnn.MultiRNNCell)
@@ -140,28 +138,30 @@ class TestHelper(unittest.TestCase):
     def test_get_batches(self):
         """Test script_generator.py function, _get_batches()."""
         with tf.Graph().as_default():
-            test_seq_length = 5
-            test_batch_size = 128
-            test_int_text = list(range(1000 * test_seq_length))
-            batches = self.sg._get_batches(test_int_text, test_batch_size,
-                                           test_seq_length)
+            test_int_text = list(range(1000 * self.sg.seq_length))
+            batches = self.sg._get_batches(test_int_text)
+
+            # Create index in order to generate comparable arrays
+            compare_idx = batches.shape[0] * batches.shape[3]
 
             # Check type
             self.assertIsInstance(batches, np.ndarray)
 
             # Check shape
-            self.assertEqual(batches.shape, (7, 2, 128, 5))
+            self.assertEqual(batches.shape, (7, 2, self.sg.batch_size,
+                                             self.sg.seq_length))
 
             # Loop through sequences, check contents of sequences
             for x in range(batches.shape[2]):
-                x35 = x * 35
+                x2 = x * compare_idx
                 self.assertTrue(np.array_equal(batches[0, 0, x],
-                                np.array(range(x35, x35 + batches.shape[3]))))
+                                np.array(range(x2, x2 + batches.shape[3]))))
                 self.assertTrue(np.array_equal(batches[0, 1, x],
-                                np.array(range(x35 + 1, x35 + 1 + batches.shape[3]))))
+                                np.array(range(x2 + 1, x2 + 1 + batches.shape[3]))))
 
             # Check last value for target = first value of input
-            last_seq_target = (test_batch_size - 1) * 35 + 31
+            compare_idx2 = (batches.shape[0] - 1) * batches.shape[3] + 1
+            last_seq_target = (self.sg.batch_size - 1) * compare_idx + compare_idx2
             last_seq = np.array(range(last_seq_target,
                                       last_seq_target + batches.shape[3]))
             last_seq[-1] = batches[0, 0, 0, 0]
@@ -185,13 +185,11 @@ class TestHelper(unittest.TestCase):
     def test_build_rnn(self):
         """Test script_generator.py function, _build_rnn()."""
         with tf.Graph().as_default():
-            test_rnn_size = 256
-            test_rnn_layer_size = 2
-            test_cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(test_rnn_size)
-                                          for _ in range(test_rnn_layer_size)])
+            test_cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(self.sg.rnn_size)
+                                          for _ in range(self.sg.rnn_layer_size)])
 
             test_inputs = tf.placeholder(tf.float32,
-                                         [None, None, test_rnn_size])
+                                         [None, None, self.sg.rnn_size])
             outputs, final_state = self.sg._build_rnn(test_cell,
                                                       test_inputs)
 
@@ -201,26 +199,23 @@ class TestHelper(unittest.TestCase):
 
             # Check shape
             self.assertEqual(outputs.get_shape().as_list(),
-                             [None, None, test_rnn_size])
+                             [None, None, self.sg.rnn_size])
             self.assertEqual(final_state.get_shape().as_list(),
-                             [test_rnn_layer_size, 2, None, test_rnn_size])
+                             [self.sg.rnn_layer_size, 2, None,
+                              self.sg.rnn_size])
 
     def test_build_nn(self):
         """Test script_generator.py function, _build_nn()."""
         with tf.Graph().as_default():
             test_input_data_shape = [128, 5]
             test_input_data = tf.placeholder(tf.int32, test_input_data_shape)
-            test_rnn_size = 256
-            test_embed_dim = 300
-            test_rnn_layer_size = 2
             test_vocab_size = 27
-            test_cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(test_rnn_size)
-                                         for _ in range(test_rnn_layer_size)])
+            test_cell = rnn.MultiRNNCell([rnn.BasicLSTMCell(self.sg.rnn_size)
+                                         for _ in range(self.sg.rnn_layer_size)])
 
-            logits, final_state = self.sg._build_nn(test_cell, test_rnn_size,
+            logits, final_state = self.sg._build_nn(test_cell,
                                                     test_input_data,
-                                                    test_vocab_size,
-                                                    test_embed_dim)
+                                                    test_vocab_size)
 
             # Check name
             self.assertTrue(hasattr(final_state, "name"))
@@ -230,7 +225,8 @@ class TestHelper(unittest.TestCase):
             self.assertEqual(logits.get_shape().as_list(),
                              test_input_data_shape + [test_vocab_size])
             self.assertEqual(final_state.get_shape().as_list(),
-                             [test_rnn_layer_size, 2, None, test_rnn_size])
+                             [self.sg.rnn_layer_size, 2, None,
+                              self.sg.rnn_size])
 
     def test_get_loaded_tensors(self):
         """Test script_generator.py function, _get_loaded_tensors()."""
