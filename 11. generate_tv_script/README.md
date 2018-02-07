@@ -33,6 +33,6 @@ Then run the script_generator.py file
 python preprocess.py && python script_generator.py
 ```
 
-## TODO
-- Finish the docstrings <br />
-- Figure out why seq2seq.sequence_loss() cannot be referenced by name
+## Notes (and possible areas of improvement)
+- Can reduce number of passed arguments to class methods, as some parameters have been made into class attributes, but this would involve a big change to both the script_generator.py as well as the test_file.py modules. Not doing that for the interest of time. <br />
+- I run into errors trying to refer to seq2seq.sequence_loss tensor by name; using the tf.Graph.get_tensor_by_name() method doesn't work, so I made a work around by passing the tensor itself. <br />
