@@ -232,8 +232,8 @@ class TestHelper(unittest.TestCase):
             self.assertEqual(final_state.get_shape().as_list(),
                              [test_rnn_layer_size, 2, None, test_rnn_size])
 
-    def test_get_tensors(self):
-        """Test script_generator.py function, _get_tensors()."""
+    def test_get_loaded_tensors(self):
+        """Test script_generator.py function, _get_loaded_tensors()."""
         test_graph = tf.Graph()
         with test_graph.as_default():
             test_input = tf.placeholder(tf.int32, name="input")
@@ -241,7 +241,7 @@ class TestHelper(unittest.TestCase):
             test_final_state = tf.placeholder(tf.int32, name="final_state")
             test_probs = tf.placeholder(tf.float32, name="probs")
 
-        input_text, initial_state, final_state, probs = self.sg._get_tensors(test_graph)
+        input_text, initial_state, final_state, probs = self.sg._get_loaded_tensors(test_graph)
 
         # Check tensors
         self.assertEqual(input_text, test_input)

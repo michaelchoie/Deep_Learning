@@ -108,8 +108,7 @@ class DataPreprocessor(object):
 def main():
     """Initialize data preprocessor object and save preprocessed data."""
     p = DataPreprocessor()
-    p.preprocess_and_save_data(p.path_to_file, p.token_lookup,
-                               p._create_lookup_tables)
+    p.preprocess_and_save_data(p.path_to_file)
 
 
 if __name__ == "__main__":

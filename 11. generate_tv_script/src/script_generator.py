@@ -11,16 +11,16 @@ class ScriptGenerator(object):
     An RNN that utilizes word2vec and LSTM cells to train model on script text.
 
     Attributes:
-        num_epochs: number of times data is fully processed during backprop
-        batch_size: size of mini-batches during backprop
-        rnn_size: size of LSTM cells
-        embed_dim: size of word2vec embedded layer
-        seq_length: number of words processed at a time
-        learning_rate: learning rate for optimization purposes
-        show_every_n_batches: output training results every n batches
-        gen_length: length of generated script
-        save_dir: path to checkpoint file
-        prime_word: word to prime the model
+        num_epochs (int): num times data is fully processed during backprop
+        batch_size (int): size of mini-batches during backprop
+        rnn_size (int): size of LSTM cells
+        embed_dim (int): size of word2vec embedded layer
+        seq_length (int): number of words processed at a time
+        learning_rate (float): learning rate for optimization purposes
+        show_every_n_batches (int): output training results every n batches
+        gen_length (int): length of generated script
+        save_dir (str): path to checkpoint file
+        prime_word (str): word to prime the model
     """
 
     def __init__(self):
@@ -124,10 +124,10 @@ class ScriptGenerator(object):
         Create cost function and optimizer for backprop.
 
         Args:
-            logits
-            targets
-            input_data_shape
-            lr
+            logits (tensor): output of neural net
+            targets (tensor): desired output of neural net
+            input_data_shape (tuple): dimensions of data
+            lr (tensor): learning rate tensor
         Returns:
             cost (tensor)
             optimizer (op)
@@ -145,11 +145,11 @@ class ScriptGenerator(object):
         Create gradients for backprop.
 
         Args:
-            optimizer
-            cost
+            optimizer (tensor): optimizing function
+            cost (tensor): cost function
         Returns:
-            capped_gradients
-            train_op
+            capped_gradients (tensor): capped gradients to prevent exploding gradients
+            train_op (op): TensorFlow optimizing operation
         """
         gradients = optimizer.compute_gradients(cost)
         capped_gradients = [(tf.clip_by_value(grad, -1., 1.), var)
@@ -202,8 +202,8 @@ class ScriptGenerator(object):
         Pick the next word in the generated text.
 
         Args:
-            probabilities (ndarray): Probabilites of the next word
-            int_to_vocab (dict): Keys are word ids, values are words
+            probabilities (ndarray): probabilites of the next word
+            int_to_vocab (dict): keys are word ids, values are words
         Returns:
             str (most likely word to appear after sequence)
         """
@@ -215,9 +215,9 @@ class ScriptGenerator(object):
         Return batches of input and target.
 
         Args:
-            int_text (ndarray): Text with the words replaced by their ids
-            batch_size (int): The size of batch
-            seq_length (int): The length of sequence
+            int_text (list): TV script data represented in integers
+            batch_size (int): the size of batch
+            seq_length (int): the length of sequence
         Returns:
             ndarray (mini-batch)
         """
@@ -266,7 +266,7 @@ class ScriptGenerator(object):
         Build the computational graph.
 
         Args:
-            int_to_vocab (dict): key = embedded layer row, value = word
+            int_to_vocab (dict): key = embedding layer index, key = word
         Returns:
             train_graph (Graph): populated Tensorflow Graph object
         """
@@ -300,7 +300,7 @@ class ScriptGenerator(object):
 
         Args:
             train_graph (Graph): trained Tensorflow graph
-            int_text (list): tv script data represented in integers
+            int_text (list): TV script data represented in integers
         """
         train_graph, cost = self._build_graph(int_to_vocab)
         initial_state, input_text, targets, lr, final_state, train_op = self._get_bare_tensors(train_graph)
@@ -334,9 +334,9 @@ class ScriptGenerator(object):
         Load saved model and generate tv script.
 
         Args:
-            vocab_to_int
-            int_to_vocab
-            token_dict
+            vocab_to_int (dict): key = word, value = embedding layer index
+            int_to_vocab (dict): key = embedding layer index, key = word
+            token_dict (dict): key = punctuation, value = token
         """
         loaded_graph = tf.Graph()
         with tf.Session(graph=loaded_graph) as sess:
