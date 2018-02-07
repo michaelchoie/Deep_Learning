@@ -26,11 +26,11 @@ class ScriptGenerator(object):
 
     def __init__(self):
         """Initalize object with optimization hyperparameters."""
-        self.num_epochs = 50
+        self.num_epochs = 1 # 50
         self.batch_size = 128
-        self.rnn_size = 1024
+        self.rnn_size = 256 # 1024
         self.rnn_layer_size = 2
-        self.embed_dim = 512
+        self.embed_dim = 256 # 512
         self.seq_length = 16
         self.learning_rate = 0.001
         self.show_every_n_batches = 11
