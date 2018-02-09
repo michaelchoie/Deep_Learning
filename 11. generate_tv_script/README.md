@@ -78,16 +78,23 @@ __RNN:__<br />
 Using an RNN rather than a feedforward network allows us to train our model on the _sequence_ of words in the data, which in theory should allow us to generate a more coherent sequence of words.
 
 __Word2Vec:__ <br />
-We first prepare our data by passing it into an embedding layer. By using this layer, we can bypass performing unnecessary matrix multiplication calculations. <br />
-The dimensionality of the input layer must reflect all possible words in the dataset, and yet, we process one word at a time, and only one element will equal 1 while all others will equal zero. <br /> Performing matrix multiplication on this input layer would be a huge waste of computational time as most of the products will equal zero. Instead, what we can do is create an embedding lookup table that has a dimensionality of (# of unique words, # of hidden units). <br />
+We first prepare our data by passing it into an embedding layer. By using this layer, we can bypass performing unnecessary matrix multiplication calculations.
+
+The dimensionality of the input layer must reflect all possible words in the dataset, and yet, we process one word at a time, and only one element will equal 1 while all others will equal zero.
+
+Performing matrix multiplication on this input layer would be a huge waste of computational time as most of the products will equal zero. Instead, what we can do is create an embedding lookup table that has a dimensionality of (# of unique words, # of hidden units).
+
 We assign words to a row index in this lookup table, and the row in this table will reflect the vector that contains the word's hidden unit weights.
 
 __LSTM:__ <br />
-LSTM (Long-Short Term Memory) cells are a specific type of memory unit that allow an RNN to retain information on previous words while avoiding the vanishing gradients. <br />
+LSTM (Long-Short Term Memory) cells are a specific type of memory unit that allow an RNN to retain information on previous words while avoiding the vanishing gradients.
+
 LSTM cells have the ability to remove or add information to the cell state, carefully regulated by structures called gates. There are 3 types:
+
 1. Forget gate: decide what information to throw away for new cell state
 2. Update gate: decide what new information to store in the new cell state
 3. Output gate: output a filtered version of the cell state
+
 LSTM's eliminate the activation function for the hidden state - we simply take the gradient of the identity function, which is 1. As a result, backpropogation would not result in smaller and smaller gradients as we look back further in time.
 
 __Output:__ <br />
