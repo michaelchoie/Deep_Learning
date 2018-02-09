@@ -57,11 +57,12 @@ library(rjson)
 library(wordcloud)
 
 word_counts <- fromJSON(file="word_counts.json")
+unlist_words <- unlist(word_counts)
 
-topwords <- unlist(word_counts)[seq(1, 100, 2)]
-topcounts <- as.integer(unlist(word_counts)[seq(2, 101, 2)])
+topwords <- unlist_words[seq(1, 100, 2)]
+topcounts <- as.integer(unlist_words[seq(2, 101, 2)])
 
-wordcloud(topwords, topcounts, colors=brewer.pal(8,"Dark2"))
+wordcloud(topwords, topcounts, colors=brewer.pal(8, "Dark2"))
 ``` 
 
 ## Model Strategy
