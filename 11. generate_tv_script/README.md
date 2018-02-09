@@ -87,7 +87,7 @@ Performing matrix multiplication on this input layer would be a huge waste of co
 We assign words to a row index in this lookup table, and the row in this table will reflect the vector that contains the word's hidden unit weights.
 
 __LSTM:__ <br />
-LSTM (Long-Short Term Memory) cells are a specific type of memory unit that allow an RNN to retain information on previous words while avoiding the vanishing gradients.
+LSTM (Long-Short Term Memory) cells are a specific type of memory unit that allow an RNN to retain information on previous words while avoiding the vanishing gradient problem.
 
 LSTM cells have the ability to remove or add information to the cell state, carefully regulated by structures called gates. There are 3 types:
 
