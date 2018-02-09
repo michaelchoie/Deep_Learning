@@ -48,11 +48,6 @@ def identify_characters(data):
     return characters
 
 
-def retrieve_labels_values(counter):
-    labels, values = zip(*counter.items())
-    return labels, values
-
-
 def count_characters(data, characters):
     """
     Return amount of times a character appears in text.
@@ -63,8 +58,8 @@ def count_characters(data, characters):
         labels (ndarray):
         values (ndarray):
     """
-    counts = Counter(data.split())
-    character_counts = {name: freq for (name, freq) in counts.most_common()
+    count = Counter(data.split())
+    character_counts = {name[:-1]: freq for (name, freq) in count.most_common()
                         if name in characters}
 
     labels, values = zip(*character_counts.items())
@@ -105,6 +100,7 @@ def visualize_counts(labels, values):
 
     plt.bar(indices, values[:5], width=bar_width, align="center")
     plt.xticks(indices, labels[:5])
+    plt.title("Top 5 Characters by Frequency")
     plt.show()
 
 
@@ -118,21 +114,26 @@ def remove_stopwords_names(data, characters):
     Returns
         filtered_script (list): script without stopwords or character names
     """
-    word_tokens = word_tokenize(data.lower())
+    strip_punc = str.maketrans('', '', string.punctuation)
+    data = data.translate(strip_punc).lower()
+    characters = [char.translate(strip_punc).lower() for char in characters]
+    word_tokens = word_tokenize(data)
     stop_words = stopwords.words('english')
-    characters = [character.lower()[:-1] for character in characters]
     filtered_script = [w for w in word_tokens
                        if w not in stop_words and
                        w not in characters and
-                       w not in string.punctuation and
-                       "'" not in w and "." not in w and
                        len(w) > 2]
 
     return filtered_script
 
 
 def convert_to_json(filtered_script):
-    """adsf."""
+    """
+    Convert dictionary to JSON for input to R wordcloud script.
+
+    Args
+        filtered_script (list): list of filtered words in script
+    """
     dictionary = Counter(filtered_script)
 
     # Use operator.itemgetter for efficiency reasons
@@ -141,14 +142,19 @@ def convert_to_json(filtered_script):
     with open("word_counts.json", "w") as outfile:
         json.dump(sorted_dict, outfile)
 
+    print("JSON stored in {}".format(getcwd()))
+
 
 def main():
-    """asdf."""
+    """Print analytics, visualizations, and create JSON file."""
     data = get_data()
     characters = identify_characters(data)
     labels, values = count_characters(data, characters)
     text_analytics(data)
     visualize_counts(labels, values)
+    filtered_script = remove_stopwords_names(data, characters)
+    convert_to_json(filtered_script)
+
 
 if __name__ == "__main__":
     main()
