@@ -41,21 +41,23 @@ __Number of characters in script:__ 305,270 <br />
 __Number of words in script:__ 48,986 <br />
 __Number of lines in script:__ 4,519 <br />
 
-The following visualization highlights the main characters of the scene based off the amount of times they are mentioned in the script. Naturally, as the file is called "Moe's Tavern Lines," we would expect that the main characters of this episode to be the characters that frequent Moe's tavern the most. The histogram verifies this initial assumption. <br />
+The following visualization highlights the main characters of the scene based off the amount of times they are mentioned in the script. Naturally, as the file is called "Moe's Tavern Lines," we would expect that the main characters of this episode to be the characters that frequent Moe's tavern the most. The histogram verifies this initial assumption.
+
 <p align="center">
     <img src="https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/top_characters.png">
 </p>
 
-Next, I created a wordcloud containing the top 50 words of a subset of the tv script data. By producing a wordcloud, we can get a sense of how characters communicated throughout the scene. <br />
+Next, I created a wordcloud containing the top 50 words of a subset of the tv script data. By producing a wordcloud, we can get a sense of how characters communicated throughout the scene.
+
+In order to produce this wordcloud, I removed all stopwords, punctuation, the names that denoted who was speaking at each line (i.e Homer_Simpson: "blah blah blah"), and words with a length less than 3. My rationale behind this was that this subset of the text would contain more meaningful words.
+
 <p align="center">
     <img src="https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/wordcloud.png">
 </p>
 
-Although there are some words in this visualization that contain little information such as "hey" or "yeah", the wordcloud also contains words that verify that the text data was indeed a bar scene. For example, it contains words like "bar", "drink", "money", and we can presume that the main characters speaking are Moe and Homer. This fact is vetted by the histogram above. <br />
+Although there are some words in this visualization that contain little information such as "hey" or "yeah", the wordcloud also contains words that verify that the text data was indeed a bar scene. For example, it contains words like "bar", "drink", "money", and we can presume that the main characters speaking are Moe and Homer. This fact is vetted by the histogram above.
 
-In order to produce this wordcloud, I removed all stopwords, punctuation, the names that denoted who was speaking at each line (i.e Homer_Simpson: "blah blah blah"), and words with a length less than 3. My rationale behind this was that this subset of the text would contain more meaningful words. <br />
-
-I ran into a lot of difficulty trying to install the wordcloud package in Python, so I did a workaround using R. To achieve this, I created a sorted dictionary whose keys were words and values were the respective counts, and then I saved that into a JSON file. I loaded this JSON into R and used the wordcloud library to produce a visualization. My R code is as follows: <br />
+I ran into a lot of difficulty trying to install the wordcloud package in Python, so I did a workaround using R. To achieve this, I created a sorted dictionary whose keys were words and values were the respective counts, and then I saved that into a JSON file. I loaded this JSON into R and used the wordcloud library to produce a visualization. My R code is as follows:
 ```
 library(rjson)
 library(wordcloud)
@@ -74,7 +76,7 @@ Word2vec, RNN, LSTM cells, Seq2Seq. <br />
 Although these modules can be run on a local computer, I used an AWS GPU cluster to streamline the training process.
 
 ## Modeling Performance
-After training on the data for 50 epochs, this was the resulting output: <br />
+After training on the data for 50 epochs, this was the resulting output:
 ```
 homer_simpson: okay, this isn't easy, so i'm just like the car now, and they starve. what youse me miss?
 moe_szyslak: huh? usually all that funny. i can pay with my nickels on down.
