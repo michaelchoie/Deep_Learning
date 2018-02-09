@@ -72,8 +72,17 @@ wordcloud(topwords, topcounts, colors=brewer.pal(8, "Dark2"))
 ``` 
 
 ## Model Strategy
-Word2vec, RNN, LSTM cells, Seq2Seq. <br />
-Although these modules can be run on a local computer, I used an AWS GPU cluster to streamline the training process.
+In order to self-generate a TV script, I utilized a Recurrent Neural Network in conjunction with an embedding layer, LSTM cells, and the Seq2Seq algorithm.
+
+Using an RNN rather than a feedforward network is more accurate because we can train our model on the _sequence_ of words in the data, which in theory should allow us to generate a more coherent sequence of words.
+
+We first prepare our data by passing it into an embedding layer. By using this layer, we can bypass performing unnecessary matrix multiplication calculations. The dimensionality of the input layer must reflect all possible words in the dataset, and yet, we process one word at a time, and only one element will have a value (1) while all others will equal zero. Performing matrix multiplication on this input layer would be a huge waste of computational time as most of the products will equal zero. Instead, what we can do is create an embedding lookup table. We can assign words to a row index in this lookup table, and the row in this table will reflect the vector that contains the word's hidden unit weights.
+
+LSTM cells are hidden layers that allow us to retain information on previous words while avoiding the vanishing gradient issue. This is because LSTM's are able to discern between "long term memory" and "short term memory" in such a way that backpropogation would not result in smaller and smaller gradients as we look back further in time.
+
+The seq2seq algorithm uses an encoder-decoder architecture so that it takes the output of the encoder (the LSTM output) as input to the decoder in order to generate a sequence of words.
+
+Although this model can be run on a local computer, I used an AWS GPU cluster to streamline the training process.
 
 ## Modeling Performance
 After training on the data for 50 epochs, this was the resulting output:
