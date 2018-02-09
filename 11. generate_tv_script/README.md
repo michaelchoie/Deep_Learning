@@ -69,7 +69,22 @@ Word2vec, RNN, LSTM cells, Seq2Seq. <br />
 Although these modules can be run on a local computer, I used an AWS GPU cluster to streamline the training process.
 
 ## Modeling Performance
-The produced TV script doesn't make much sense, but that is to be expected. We trained on less than a megabyte of text. In order to get good results, you'll have to use a smaller vocabulary or get more data. While this data is a subset of a larger dataset, for demonstration purposes, this particular dataset will suffice. The point is that the script was able to generate somewhat cohesive English.
+After training on the data for 50 epochs, this was the resulting output: <br />
+```
+homer_simpson: okay, this isn't easy, so i'm just like the car now, and they starve. what youse me miss?
+moe_szyslak: huh? usually all that funny. i can pay with my nickels on down.
+moe_szyslak: i'm gonna delete" the kid is"...(sighs)
+homer_simpson:(noticing phone) moe, you're all right--(worried) i've got an old drink marge
+homer_simpson: you're a great ingredient, a beer's moe.
+moe_szyslak: homer, this is all right?
+moe_szyslak: uh... that's why i gotta be honest for him on the eye? that's not for mr. gumbel, please, tell us feel bad, which has turned out bye night.
+homer_simpson:(sadly) i really if you said you made a" best friend, moe. i got the best label.
+moe_szyslak: homer, you've been in the highest butts.
+moe_szyslak:(uneasy) oh, there's a lot. that's how i am in the bar to hooters.
+homer_simpson:(with lenny)
+```
+
+The produced TV script doesn't make that much sense, but that is to be expected. We trained on less than a megabyte of text. The point is that we were able to create a program that can generate an original, somewhat cohesive script in a relatively short period of time. And we succeeded! In order to get better results, we'd have to use a smaller vocabulary or get more data. But for demonstration purposes, this particular dataset will suffice. 
 
 ## Notes
 - I run into errors trying to refer to seq2seq.sequence_loss tensor by name; using the tf.Graph.get_tensor_by_name() method doesn't work, so I made a work around by passing the tensor itself.
