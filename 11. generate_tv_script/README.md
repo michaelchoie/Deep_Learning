@@ -58,8 +58,8 @@ topwords <- unlist(word_counts)[seq(1, 100, 2)]
 topcounts <- as.integer(unlist(word_counts)[seq(2, 101, 2)])
 
 wordcloud(topwords, topcounts, colors=brewer.pal(8,"Dark2"))
-```
-And the output is shown below. This wordcloud contains the top 50 words of the subsetted tv script data.
+``` 
+<br /> And the output is shown below. This wordcloud contains the top 50 words of the subsetted tv script data.
 ![alt text](https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/wordcloud.png)
 Although there are some words in this visualization that contain little information such as "hey" or "yeah", the wordcloud also contains words that verify that the text data was indeed a bar scene. For example, it contains words like "bar", "drink", "money", and we can presume that the main characters speaking are Moe and Homer. This fact is vetted by the histogram above.
 
