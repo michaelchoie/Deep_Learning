@@ -6,7 +6,8 @@ By using machine learning techniques such as word2vec and seq2seq, we can teach 
 ## Key Files
 __preprocess.py__ - in charge of creating an embedding layer, punctuation tokenization, functions to handle pickle files <br />
 __script_generator.py__ - in charge of creating the RNN, training the network, and producing a script <br />
-__test_file.py__ - in charge of testing functions in the modules above
+__test_file.py__ - in charge of testing functions in the modules above <br />
+__text_viz_analytics.py__ - in charge of creating analytics and visualizations of the text data 
 
 ## Getting Started
 To get started with this, make sure you set up your local environment
@@ -33,13 +34,12 @@ python preprocess.py && python script_generator.py
 ```
 
 ## Data Summary
-This text data is a script from a particular scene in an episode from the hit TV show,  "The Simpsons." <br />
-The following analytics and visualizations were generated in the __text_viz_analytics.py__ script:
+This text data is a script from a particular scene in an episode of hit TV show,  "The Simpsons." The following analytics and visualizations were generated in the __text_viz_analytics.py__ script:
 
-Size of text file: 298 kb <br />
-Number of characters in script: 305,270 <br />
-Number of words in script: 48,986 <br />
-Number of lines in script: 4,519 <br />
+__Size of text file:__ 298 kb <br />
+__Number of characters in script:__ 305,270 <br />
+__Number of words in script:__ 48,986 <br />
+__Number of lines in script:__ 4,519 <br />
 
 The following visualization highlights the main characters of the scene based off the amount of times they are mentioned in the script. Naturally, as the file is called "Moe's Tavern Lines," we would expect that the main characters of this episode to be the characters that frequent Moe's tavern the most. The histogram verifies this initial assumption. <br />
 ![alt text](https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/top_characters.png)
