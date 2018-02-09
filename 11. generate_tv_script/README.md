@@ -42,10 +42,14 @@ __Number of words in script:__ 48,986 <br />
 __Number of lines in script:__ 4,519 <br />
 
 The following visualization highlights the main characters of the scene based off the amount of times they are mentioned in the script. Naturally, as the file is called "Moe's Tavern Lines," we would expect that the main characters of this episode to be the characters that frequent Moe's tavern the most. The histogram verifies this initial assumption. <br />
-![alt text](https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/top_characters.png)
+<p align="center">
+    <img src="https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/top_characters.png">
+</p>
 
 Next, I created a wordcloud containing the top 50 words of a subset of the tv script data. By producing a wordcloud, we can get a sense of how characters communicated throughout the scene. <br />
-![alt text](https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/wordcloud.png)
+<p align="center">
+    <img src="https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/wordcloud.png">
+</p>
 
 Although there are some words in this visualization that contain little information such as "hey" or "yeah", the wordcloud also contains words that verify that the text data was indeed a bar scene. For example, it contains words like "bar", "drink", "money", and we can presume that the main characters speaking are Moe and Homer. This fact is vetted by the histogram above. <br />
 
