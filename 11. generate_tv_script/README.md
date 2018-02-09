@@ -1,7 +1,7 @@
 # TV Script Generator
 
 ## Overview
-By using machine learning techniques such as word2vec and seq2seq, we can teach a recurrent neural network how to write a TV script by training it on sample Simpsons text. The following modules prepare and process our text data.
+By using machine learning techniques such as word2vec and LSTM, we can teach a recurrent neural network how to write a TV script by training it on sample Simpsons text. The following modules prepare and process our text data.
 
 ## Key Files
 __preprocess.py__ - in charge of creating an embedding layer, punctuation tokenization, functions to handle pickle files <br />
@@ -72,7 +72,7 @@ wordcloud(topwords, topcounts, colors=brewer.pal(8, "Dark2"))
 ``` 
 
 ## Model Strategy
-In order to generate a TV script, I trained a Recurrent Neural Network using AWS. The RNN's architecture consisted of a word2vec embedding layer, LSTM cells, and a seq2seq encoder/decoder.
+In order to generate a TV script, I trained a Recurrent Neural Network using AWS. The RNN's architecture consisted of a word2vec embedding layer and LSTM cells.
 
 __RNN:__<br />
 Using an RNN rather than a feedforward network allows us to train our model on the _sequence_ of words in the data, which in theory should allow us to generate a more coherent sequence of words.
@@ -83,7 +83,7 @@ We first prepare our data by passing it into an embedding layer. By using this l
 __LSTM:__ <br />
 LSTM (Long-Short Term Memory) cells are a specific type of memory unit that allows an RNN to retain information on previous words while avoiding the vanishing gradients. This is because LSTM's eliminate the activation function for the hidden state - we simply take the gradient of the identity function, which is 1. As a result, backpropogation would not result in smaller and smaller gradients as we look back further in time.
 
-__Seq2Seq:__ <br />
+__Output:__ <br />
 In this particular module, we train the RNN so that it updates its probability vector for words within a sequence. Therefore, once we "prime" our network by giving it a word to start off the sequence, it outputs the most likely word to appear next given the previous  words in the sequence.
 
 __Cloud Computing:__ <br />
