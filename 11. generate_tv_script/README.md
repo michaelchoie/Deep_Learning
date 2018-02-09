@@ -72,16 +72,21 @@ wordcloud(topwords, topcounts, colors=brewer.pal(8, "Dark2"))
 ``` 
 
 ## Model Strategy
-In order to self-generate a TV script, I utilized a Recurrent Neural Network in conjunction with an embedding layer, LSTM cells, and the Seq2Seq algorithm.
+In order to generate a TV script, I trained a Recurrent Neural Network using AWS. The RNN's architecture consisted of a word2vec embedding layer, LSTM cells, and a seq2seq encoder/decoder.
 
-Using an RNN rather than a feedforward network is more accurate because we can train our model on the _sequence_ of words in the data, which in theory should allow us to generate a more coherent sequence of words.
+__RNN:__<br />
+Using an RNN rather than a feedforward network allows us to train our model on the _sequence_ of words in the data, which in theory should allow us to generate a more coherent sequence of words.
 
-We first prepare our data by passing it into an embedding layer. By using this layer, we can bypass performing unnecessary matrix multiplication calculations. The dimensionality of the input layer must reflect all possible words in the dataset, and yet, we process one word at a time, and only one element will have a value (1) while all others will equal zero. Performing matrix multiplication on this input layer would be a huge waste of computational time as most of the products will equal zero. Instead, what we can do is create an embedding lookup table. We can assign words to a row index in this lookup table, and the row in this table will reflect the vector that contains the word's hidden unit weights.
+__Word2Vec:__ <br />
+We first prepare our data by passing it into an embedding layer. By using this layer, we can bypass performing unnecessary matrix multiplication calculations. The dimensionality of the input layer must reflect all possible words in the dataset, and yet, we process one word at a time, and only one element will have a value (1) while all others will equal zero. Performing matrix multiplication on this input layer would be a huge waste of computational time as most of the products will equal zero. Instead, what we can do is create an embedding lookup table that has a dimensionality of (# of unique words, # of hidden units). We assign words to a row index in this lookup table, and the row in this table will reflect the vector that contains the word's hidden unit weights.
 
-LSTM cells are hidden layers that allow us to retain information on previous words while avoiding the vanishing gradient issue. This is because LSTM's are able to discern between "long term memory" and "short term memory" in such a way that backpropogation would not result in smaller and smaller gradients as we look back further in time.
+__LSTM:__ <br />
+LSTM (Long-Short Term Memory) cells are a specific type of memory unit that allows an RNN to retain information on previous words while avoiding the vanishing gradients. This is because LSTM's eliminate the activation function for the hidden state - we simply take the gradient of the identity function, which is 1. As a result, backpropogation would not result in smaller and smaller gradients as we look back further in time.
 
-The seq2seq algorithm uses an encoder-decoder architecture so that it takes the output of the encoder (the LSTM output) as input to the decoder in order to generate a sequence of words.
+__Seq2Seq:__ <br />
+In this particular module, we train the RNN so that it updates its probability vector for words within a sequence. Therefore, once we "prime" our network by giving it a word to start off the sequence, it outputs the most likely word to appear next given the previous  words in the sequence.
 
+__Cloud Computing:__ <br />
 Although this model can be run on a local computer, I used an AWS GPU cluster to streamline the training process.
 
 ## Modeling Performance
