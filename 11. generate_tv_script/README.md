@@ -46,6 +46,7 @@ The following visualization highlights the main characters of the scene based of
 
 By producing a wordcloud, we can get a sense of how characters communicated throughout the scene. <br />
 In order to produce this wordcloud, I removed all stopwords, punctuation, the names that denoted who was speaking at each line (i.e Homer_Simpson: "blah blah blah"), and words with a length less than 3. My rationale behind this was that this subset of the text would contain more meaningful words. <br />
+
 I ran into a lot of difficulty trying to install the wordcloud package in Python, so I did a workaround using R. To achieve this, I created a sorted dictionary whose keys were words and values were the respective counts, and then I saved that into a JSON file. I loaded this JSON into R and used the wordcloud library to produce a visualization. My R code is as follows: <br />
 ```
 library(rjson)
@@ -60,7 +61,6 @@ wordcloud(topwords, topcounts, colors=brewer.pal(8,"Dark2"))
 ```
 And the output is shown below. This wordcloud contains the top 50 words of the subsetted tv script data.
 ![alt text](https://github.com/michaelchoie/Deep_Learning/blob/master/11.%20generate_tv_script/wordcloud.png)
-
 Although there are some words in this visualization that contain little information such as "hey" or "yeah", the wordcloud also contains words that verify that the text data was indeed a bar scene. For example, it contains words like "bar", "drink", "money", and we can presume that the main characters speaking are Moe and Homer. This fact is vetted by the histogram above.
 
 ## Model Strategy
