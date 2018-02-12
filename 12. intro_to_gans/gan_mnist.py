@@ -27,8 +27,6 @@ class GanMNIST(object):
         batch_size (int): mini-batch size
     """
 
-    model_name = "GAN"  # name for checkpoint
-
     def __init__(self, sess):
         """Initialize GanMNIST object."""
         self.sess = sess
