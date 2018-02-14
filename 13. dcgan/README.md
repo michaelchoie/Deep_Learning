@@ -1,0 +1,1 @@
+Create a DCGAN that is trained on the SVHN dataset (Google street view images) and generate images. However, I only produced code that runs without error. I did not run train the model in the interest of time.
