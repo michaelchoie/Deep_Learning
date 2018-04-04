@@ -120,7 +120,7 @@ class GanMNIST(object):
                        if var.name.startswith('generator')]
 
         self.saver = tf.train.Saver(var_list=self.g_vars)
-
+        
     def train(self):
         """Train the network and save samples."""
         d_train_op = tf.train.AdamOptimizer().minimize(self.d_loss,
